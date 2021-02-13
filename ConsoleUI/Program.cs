@@ -13,24 +13,60 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            CarTest();
-            Console.WriteLine("----------------------------------");
-            BrandTest();
-            Console.WriteLine("----------------------------------");
-            ColorTest();
-            Console.WriteLine("----------------------------------");
+            RentalTest();
 
-            CarManager carManager2 = new CarManager(new EFCarDal());
-            var result4 = carManager2.GetCarDetails();
-            if (result4.Success == true)
+            //CustomerTest();
+            //CarTest();
+            //Console.WriteLine("----------------------------------");
+            //BrandTest();
+            //Console.WriteLine("----------------------------------");
+            //ColorTest();
+            //Console.WriteLine("----------------------------------");
+
+            //CarManager carManager2 = new CarManager(new EFCarDal());
+            //var result4 = carManager2.GetCarDetails();
+            //if (result4.Success == true)
+            //{
+            //    foreach (var car in result4.Data)
+            //    {
+            //        Console.WriteLine("Car Name: " + car.CarName + " / Brand Name : " + car.BrandName + " / Color : " + car.ColorName + " / Daily Price : " + car.DailyPrice);
+
+            //    }
+            //}
+
+        }
+
+        private static void RentalTest()
+        { 
+            RentalManager rentalManager = new RentalManager(new EFRentalDal());
+            Rental rental1 = new Rental { CarId = 1, CustomerId = 3, RentDate = DateTime.Now };
+            Rental rental2 = new Rental { RentalId = 6 };
+            rentalManager.Add(rental1);
+            //rentalManager.Delete(rental2);
+            var result5 = rentalManager.GetRentalDetails();
+            if (result5.Success == true)
             {
-                foreach (var car in result4.Data)
+                foreach (var rental in result5.Data)
                 {
-                    Console.WriteLine("Car Name: " + car.CarName + " / Brand Name : " + car.BrandName + " / Color : " + car.ColorName + " / Daily Price : " + car.DailyPrice);
-
+                    Console.WriteLine("CarName = " + rental.CarName + ",   CompanyName = " + rental.CompanyName +
+                     ",  RentDate = " + rental.RentDate + ",  ReturnDate= " + rental.ReturnDate);
                 }
             }
+        }
 
+        private static void CustomerTest()
+        {
+            CustomerManager customerManager = new CustomerManager(new EFCustomerDal());
+            Customer customer1 = new Customer { UserId = 2, CompanyName = "F" };
+            customerManager.Add(customer1);
+            var result5 = customerManager.GetAll();
+            if (result5.Success == true)
+            {
+                foreach (var customer in result5.Data)
+                {
+                    Console.WriteLine("CustomerID: " + customer.CustomerId + " UserId: " + customer.UserId + " Company Name: " + customer.CompanyName);
+                }
+            }
         }
 
         private static void ColorTest()
