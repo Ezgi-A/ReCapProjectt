@@ -41,8 +41,6 @@ namespace Business.Constants
         public static string UserDeleting = "User deleted.";
         public static string UserUpdating = "User updating.";
         public static string UserListing = "User listed.";
-
-
-
+        public static string FailAddedImageLimit = "Maximum image added.";
     }
 }
