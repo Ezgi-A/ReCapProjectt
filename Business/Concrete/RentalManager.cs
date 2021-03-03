@@ -6,7 +6,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using Entities.DTOs;
 namespace Business.Concrete
 {
     public class RentalManager : IRentalService

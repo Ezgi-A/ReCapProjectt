@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Entities.DTOs;
+using Business.BusinessAspects.Autofac;
 
 namespace Business.Concrete
 {
@@ -22,7 +24,9 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
+      
         public IResult Add(Car car)
         {
             _carDal.Add(car);
@@ -35,6 +39,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CarDeleting);
         }
 
+        
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour == 22)

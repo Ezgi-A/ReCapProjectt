@@ -10,85 +10,52 @@ namespace Core.Utilities.FileHelper
 {
     public class FileHelper
     {
-        public static string AddAsync(IFormFile file)
+        public static IResult Add(string filePath, IFormFile file)
         {
-            var result = newPath(file);
-            try
+            var tempPath = Path.GetTempFileName();
+            if (file.Length > 0)
             {
-                var sourcepath = Path.GetTempFileName();
-                if (file.Length > 0)
-                    using (var stream = new FileStream(sourcepath, FileMode.Create))
-                        file.CopyTo(stream);
-
-                File.Move(sourcepath, result.newPath);
-            }
-            catch (Exception exception)
-            {
-
-                return exception.Message;
-            }
-
-            return result.Path2;
-        }
-
-        public static string UpdateAsync(string sourcePath, IFormFile file)
-        {
-            var result = newPath(file);
-
-            try
-            {
-                //File.Copy(sourcePath,result);
-
-                if (sourcePath.Length > 0)
+                using (var stream = new FileStream(tempPath, FileMode.Create))
                 {
-                    using (var stream = new FileStream(result.newPath, FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
+                    file.CopyTo(stream);
                 }
-
-                File.Delete(sourcePath);
             }
-            catch (Exception excepiton)
+            File.Move(tempPath, filePath);
+            if (!File.Exists(filePath))
             {
-                return excepiton.Message;
+                return new ErrorResult();
             }
-
-            return result.Path2;
-        }
-
-        public static IResult DeleteAsync(string path)
-        {
-            try
-            {
-                File.Delete(path);
-            }
-            catch (Exception exception)
-            {
-                return new ErrorResult(exception.Message);
-            }
-
             return new SuccessResult();
         }
 
-        public static (string newPath, string Path2) newPath(IFormFile file)
+        public static IResult Delete(string filePath)
         {
-            System.IO.FileInfo ff = new System.IO.FileInfo(file.FileName);
-            string fileExtension = ff.Extension;
-
-            var creatingUniqueFilename = Guid.NewGuid().ToString("N")
-               + "_" + DateTime.Now.Month + "_"
-               + DateTime.Now.Day + "_"
-               + DateTime.Now.Year + fileExtension;
-
-            //string path = Path.Combine(Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).FullName + @"\Images");
-
-            string path = Environment.CurrentDirectory + @"\wwwroot\Images";
-
-            string result = $@"{path}\{creatingUniqueFilename}";
-
-            return (result, $"\\Images\\{creatingUniqueFilename}");
+            if (!File.Exists(filePath))
+            {
+                return new ErrorResult("Dosya Bulunamadı.");
+            }
+            File.Delete(filePath);
+            return new SuccessResult();
         }
+
+        public static string GenerateGUIDFileName(IFormFile file, int length)
+        {
+            return Guid.NewGuid().ToString().Substring(0, length) + new FileInfo(file.FileName).Extension;
+        }
+
+        public static IResult CheckFileType(IFormFile file, string[] extensions)
+        {
+            var extension = new FileInfo(file.FileName).Extension;
+            foreach (var ext in extensions)
+            {
+                if (ext == extension)
+                {
+                    return new SuccessResult();
+                }
+            }
+            return new ErrorResult($"Desteklenmeyen Dosya Formatı: {extension}");
+        }
+        
 
     }
 }

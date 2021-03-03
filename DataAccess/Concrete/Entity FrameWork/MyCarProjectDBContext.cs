@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Core.Entities.Concrete;
+using Entities;
 using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,8 +8,10 @@ using System.Text;
 
 namespace DataAccess.Concrete.Entity_FrameWork
 {
-    public class MyCarProjectDBContext:DbContext
+    public class MyCarProjectDBContext : DbContext
     {
+        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=MyCarProjectDB;Trusted_Connection=true");
@@ -23,5 +26,10 @@ namespace DataAccess.Concrete.Entity_FrameWork
         public DbSet<User> Users { get; set; }
 
         public DbSet<CarImage> CarImages { get; set; }
+
+        public DbSet<OperationClaim> OperationClaims { get; set; }
+
+        public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
+
     }
 }
