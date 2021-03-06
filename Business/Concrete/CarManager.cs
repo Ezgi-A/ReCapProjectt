@@ -12,6 +12,10 @@ using System.Linq;
 using System.Text;
 using Entities.DTOs;
 using Business.BusinessAspects.Autofac;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Transaction;
+using Core.Aspects.Autofac.Performance;
+using System.Threading;
 
 namespace Business.Concrete
 {
@@ -24,8 +28,9 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        [SecuredOperation("product.add,admin")]
+        [SecuredOperation("car.add,admin")]
         [ValidationAspect(typeof(CarValidator))]
+        
       
         public IResult Add(Car car)
         {
@@ -38,10 +43,12 @@ namespace Business.Concrete
             _carDal.Delete(car);
             return new SuccessResult(Messages.CarDeleting);
         }
-
-        
+        //[SecuredOperation("car.list")]
+        [CacheAspect]
+        [PerformanceAspect(4)]
         public IDataResult<List<Car>> GetAll()
         {
+            Thread.Sleep(4000);
             if (DateTime.Now.Hour == 22)
             {
                 return new ErrorDataResult<List<Car>>(Messages.Maintenance);
@@ -65,6 +72,21 @@ namespace Business.Concrete
         {
             _carDal.Update(car);
             return new SuccessResult(Messages.CarUpdating);
+        }
+        [TransactionScopeAspect]
+        public IResult TransactionalOperation(Car car)
+        {
+
+
+            //Add(car);
+            //if (car.ModelYear< 1988)
+            //{
+            //    throw new Exception("Araba eski model!");
+            //}
+
+            //_carDal.Add(car);
+            //return new SuccessResult(Messages.CarAdding);
+            throw new NotImplementedException();
         }
     }
 }
