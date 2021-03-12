@@ -16,7 +16,7 @@ namespace DataAccess.Concrete.Entity_FrameWork
     {
         public List<CarDetailDto> GetCarDetails()
         {
-            using (MyCarProjectDBContext context= new MyCarProjectDBContext())
+            using (MyCarProjectDBContext context = new MyCarProjectDBContext())
             {
                 var result = from c in context.Cars
                              join b in context.Brands
@@ -32,7 +32,7 @@ namespace DataAccess.Concrete.Entity_FrameWork
                              };
                 return result.ToList();
             }
-            
+
         }
     }
 }
